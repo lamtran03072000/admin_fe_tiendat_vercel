@@ -1,8 +1,8 @@
 import { https } from './urlconfig';
 
 export const contentService = {
-  getContent: (language) => {
-    let uri = `/content?lg=${language}`;
+  getContentFull: () => {
+    let uri = `/content-full`;
     return https.get(uri);
   },
 };
