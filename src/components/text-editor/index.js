@@ -13,16 +13,13 @@ const TextEditer = ({ keySection, data, refTextEditor }) => {
         editor={ClassicEditor}
         config={{
           toolbar: ['bold', 'italic', '|'],
-          // toolbar: ['', '', '|'],
         }}
         key={keySection}
         onReady={(editor) => {
           refTextEditor.current = editor;
         }}
         onChange={(event, editor) => {}}
-        onBlur={(event, editor) => {
-          // setHidden(false);
-        }}
+        onBlur={(event, editor) => {}}
       />
       <div
         style={{

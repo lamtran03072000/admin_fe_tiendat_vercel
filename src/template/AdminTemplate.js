@@ -22,6 +22,11 @@ function getItem(label, key, icon, children) {
 const items = [
   getItem(<NavLink to={'/'}>Home page</NavLink>, '1', <DesktopOutlined />),
   getItem(<NavLink to={'/mailer'}>Mailer</NavLink>, '2', <PieChartOutlined />),
+  getItem(
+    <NavLink to={'/tuyen-dung'}>Tuyển dụng</NavLink>,
+    '3',
+    <PieChartOutlined />,
+  ),
 ];
 export default function AdminTemplate() {
   const [collapsed, setCollapsed] = useState(false);

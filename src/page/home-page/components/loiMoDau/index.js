@@ -24,7 +24,8 @@ const LoiMoDau = () => {
   const refTitleEn = useRef('');
   const refContentVn = useRef('');
   const refContentEn = useRef('');
-  const refBannerTextEn = useRef('');
+  const refButtonEn = useRef('');
+  const refButtonVn = useRef('');
   const dispatch = useDispatch();
 
   const { contentPage } = useSelector((state) => state.contentPageSlice);
@@ -67,16 +68,19 @@ const LoiMoDau = () => {
     let titleEn = refTitleEn.current.getData();
     let contentEn = refContentEn.current.getData();
     let contentVn = refContentVn.current.getData();
-
+    let buttonVn = refButtonVn.current.getData();
+    let buttonEn = refButtonEn.current.getData();
     let newDataLMDVn = {
       ...dataLoiMoDauVn,
       content: contentVn,
       title: titleVn,
+      button: buttonVn,
     };
     let newDataLMDEn = {
       ...dataLoiMoDauEn,
       content: contentEn,
       title: titleEn,
+      button: buttonEn,
     };
     let content = {
       dataLoiMoDauVn: newDataLMDVn,
@@ -104,6 +108,12 @@ const LoiMoDau = () => {
           refTextEditor={refContentVn}
           data={dataLoiMoDauVn.content}
           keySection={'ContentLmdVn'}
+        />
+        <Title level={5}>button</Title>
+        <TextEditer
+          refTextEditor={refButtonVn}
+          data={dataLoiMoDauVn.button}
+          keySection={'ButtonLmdVn'}
         />
         <Space
           style={{
@@ -145,6 +155,13 @@ const LoiMoDau = () => {
           refTextEditor={refContentEn}
           data={dataLoiMoDauEn.content}
           keySection={'ContentLmdEn'}
+        />
+        <Title level={5}>button</Title>
+
+        <TextEditer
+          refTextEditor={refButtonEn}
+          data={dataLoiMoDauEn.button}
+          keySection={'ButtonLmdVn'}
         />
         <Space
           style={{
