@@ -86,6 +86,7 @@ const LoiMoDau = () => {
       dataLoiMoDauVn: newDataLMDVn,
       dataLoiMoDauEn: newDataLMDEn,
     };
+    console.log('content: ', content);
     try {
       let data = await loiMoDauService.updateContent(lg, { content });
       dispatch(getContentPageThunk());

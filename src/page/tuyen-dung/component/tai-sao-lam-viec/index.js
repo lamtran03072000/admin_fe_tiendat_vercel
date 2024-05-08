@@ -4,6 +4,7 @@ import { getContentPageThunk } from '../../../../store/contentPage/contentPageTh
 import { Button, Col, Row, Space, Tabs, Typography, message } from 'antd';
 import TextEditer from '../../../../components/text-editor';
 import { languageUpdate } from '../../../../utils/constants';
+import { TSLVService } from '../../../../service/tuyenDung/taiSaoLamViecSer';
 
 const { Title } = Typography;
 
@@ -46,9 +47,9 @@ const TaiSaoLamViec = () => {
       dataTSLVTdEn: newDataTSLVTdEn,
     };
     try {
-      // let data = await TSLVService.updateContent(lg, { content });
+      let data = await TSLVService.updateContent(lg, { content });
       dispatch(getContentPageThunk());
-      // message.success(data.data);
+      message.success(data.data);
     } catch (error) {
       console.log('error: ', error);
     }

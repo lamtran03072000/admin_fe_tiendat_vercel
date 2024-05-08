@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
+  HomeOutlined,
+  MailOutlined,
+  UsergroupAddOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { NavLink, Outlet } from 'react-router-dom';
+import Loading from '../components/loading';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -20,12 +19,12 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
-  getItem(<NavLink to={'/'}>Home page</NavLink>, '1', <DesktopOutlined />),
-  getItem(<NavLink to={'/mailer'}>Mailer</NavLink>, '2', <PieChartOutlined />),
+  getItem(<NavLink to={'/'}>Home page</NavLink>, '1', <HomeOutlined />),
+  getItem(<NavLink to={'/mailer'}>Mailer</NavLink>, '2', <MailOutlined />),
   getItem(
     <NavLink to={'/tuyen-dung'}>Tuyển dụng</NavLink>,
     '3',
-    <PieChartOutlined />,
+    <UsergroupAddOutlined />,
   ),
 ];
 export default function AdminTemplate() {
@@ -39,6 +38,7 @@ export default function AdminTemplate() {
         minHeight: '100vh',
       }}
     >
+      <Loading />
       <Sider
         collapsible
         collapsed={collapsed}

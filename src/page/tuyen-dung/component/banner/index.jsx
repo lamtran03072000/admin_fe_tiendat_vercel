@@ -146,11 +146,7 @@ const Banner = () => {
 
   return (
     <div>
-      <Row justify={'center'}>
-        <Col span={12}>
-          <Tabs defaultActiveKey="1" items={items} />
-        </Col>
-      </Row>
+      <Tabs defaultActiveKey="1" items={items} />
     </div>
   );
 };
