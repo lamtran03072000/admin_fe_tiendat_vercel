@@ -57,24 +57,7 @@ const Banner = () => {
       setIsFirtUploadImg(true);
     } catch (error) {}
   };
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: 'none',
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
-  );
+  const uploadButton = <Button icon={<PlusOutlined />}>Upload</Button>;
 
   const handleUpDateImg = async () => {
     let content = {
@@ -189,9 +172,11 @@ const Banner = () => {
             <Title level={4}>Hình trên web</Title>
 
             <ImgFetch w={'100%'} h={'300px'} imgId={dataBannerVn.img} />
+            <br />
+            <br />
             <Upload
               customRequest={() => {}}
-              listType="picture-card"
+              listType="picture"
               showUploadList={false}
               onChange={handleChange}
               maxCount={1}

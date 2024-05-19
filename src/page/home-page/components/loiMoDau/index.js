@@ -86,7 +86,6 @@ const LoiMoDau = () => {
       dataLoiMoDauVn: newDataLMDVn,
       dataLoiMoDauEn: newDataLMDEn,
     };
-    console.log('content: ', content);
     try {
       let data = await loiMoDauService.updateContent(lg, { content });
       dispatch(getContentPageThunk());
@@ -213,22 +212,9 @@ const LoiMoDau = () => {
     }
   };
   const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: 'none',
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
+    <Button type="primary" icon={<PlusOutlined />}>
+      Upload
+    </Button>
   );
 
   return (
@@ -241,7 +227,7 @@ const LoiMoDau = () => {
           <ImgFetch w={'100%'} h={'300px'} imgId={dataLoiMoDauVn.img} />
           <Upload
             customRequest={() => {}}
-            listType="picture-card"
+            listType="picture"
             showUploadList={false}
             onChange={handleChange}
             maxCount={1}

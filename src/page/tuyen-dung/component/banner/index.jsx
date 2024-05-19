@@ -17,7 +17,6 @@ const Banner = () => {
   const dispatch = useDispatch();
 
   const { contentPage } = useSelector((state) => state.contentPageSlice);
-  console.log('contentPage: ', contentPage);
   const [dataBannerTuyenDungEn, setDataBannerTuyenDungEn] = useState({});
   const [dataBannerTuyenDungVn, setDataBannerTuyenDungVn] = useState({});
 

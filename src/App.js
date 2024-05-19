@@ -6,6 +6,7 @@ import HomePage from './page/home-page';
 import Mailer from './page/mailer';
 import TuyenDung from './page/tuyen-dung';
 import SanPham from './page/san-pham';
+import LienHe from './page/lien-he';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/mailer" element={<Mailer />}></Route>
           <Route path="/tuyen-dung" element={<TuyenDung />}></Route>
           <Route path="/san-pham" element={<SanPham />}></Route>
+          <Route path="/lien-he" element={<LienHe />}></Route>
         </Route>
 
         {/* <Route path="/admin" element={<AdminTemplate />}>

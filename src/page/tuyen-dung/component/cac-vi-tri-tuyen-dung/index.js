@@ -67,7 +67,6 @@ const CacViTriTuyenDung = () => {
         contentPage.dataTuyenDungEn.cacViTriTuyenDung.cacViTri,
       );
     }
-    console.log('ýe');
   }, [contentPage]);
 
   const showModalFormUpdate = () => {
@@ -113,7 +112,6 @@ const CacViTriTuyenDung = () => {
 
   const onDragEnd = async (result) => {
     if (!result.destination) return;
-    console.log('result: ', result);
     let newCVTVn = [...arrayDataCacViTriTdVn];
     let newCVTEn = [...arrayDataCacViTriTdEn];
     const [reorderedItemVn] = newCVTVn.splice(result.source.index, 1);

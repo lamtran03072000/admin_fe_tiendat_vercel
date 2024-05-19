@@ -4,6 +4,7 @@ import {
   MailOutlined,
   UsergroupAddOutlined,
   ProductOutlined,
+  ContactsOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { NavLink, Outlet } from 'react-router-dom';
@@ -31,6 +32,11 @@ const items = [
     <NavLink to={'/san-pham'}>Sản phẩm</NavLink>,
     '4',
     <ProductOutlined />,
+  ),
+  getItem(
+    <NavLink to={'/lien-he'}>Liên hệ</NavLink>,
+    '5',
+    <ContactsOutlined />,
   ),
 ];
 export default function AdminTemplate() {

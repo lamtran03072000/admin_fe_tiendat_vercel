@@ -9,7 +9,6 @@ const Mailer = () => {
   const fetchMails = async () => {
     try {
       const data = await mailService.getMails();
-      console.log('data: ', data);
       let newData = data.data.map((d, i) => {
         return {
           ...d,
