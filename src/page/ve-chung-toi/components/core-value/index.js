@@ -20,6 +20,8 @@ import { imgUploadService } from '../../../../service/imgUpload';
 import { linhVucUngDungService } from '../../../../service/homepage/linhVucUngDungSer';
 import { getContentPageThunk } from '../../../../store/contentPage/contentPageThunk';
 
+import { veChungToiService } from '../../../../service/ve-chung-toi/veChungToiSer';
+
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -29,62 +31,73 @@ const getBase64 = (file) =>
   });
 
 const initValueForm = {
+  titleMainVn: '',
+  titleMainEn: '',
   titleVn1: '',
   titleVn2: '',
   titleVn3: '',
   titleVn4: '',
-  titleVn5: '',
-  titleVn6: '',
   titleEn1: '',
   titleEn2: '',
   titleEn3: '',
   titleEn4: '',
-  titleEn5: '',
-  titleEn6: '',
-  titleMainVn: '',
-  titleMainEn: '',
+  desVn1: '',
+  desVn2: '',
+  desVn3: '',
+  desVn4: '',
+  desEn1: '',
+  desEn2: '',
+  desEn3: '',
+  desEn4: '',
 };
-const LinhVucUngDung = () => {
-  const { contentPage } = useSelector((state) => state.contentPageSlice);
-  const dispatch = useDispatch();
+
+const GiaTriCotLoi = () => {
   const [form] = Form.useForm();
-  const [dataVnLVUD, setDataVnLVUD] = useState();
-  const [dataEnLVUD, setDataEnLVUD] = useState();
+  const dispatch = useDispatch();
+
+  const { contentPage } = useSelector((state) => state.contentPageSlice);
+
+  const [dataVnCoreValue, setDataVnCoreValue] = useState();
+  const [dataEnCoreValue, setDataEnCoreValue] = useState();
   const [base64Extra1, setBase64Extra1] = useState();
   const [base64Extra2, setBase64Extra2] = useState();
   const [base64Extra3, setBase64Extra3] = useState();
   const [base64Extra4, setBase64Extra4] = useState();
-  const [base64Extra5, setBase64Extra5] = useState();
-  const [base64Extra6, setBase64Extra6] = useState();
 
   const [imgPreviewExtra1, setImgPreviewExtra1] = useState();
   const [imgPreviewExtra2, setImgPreviewExtra2] = useState();
   const [imgPreviewExtra3, setImgPreviewExtra3] = useState();
   const [imgPreviewExtra4, setImgPreviewExtra4] = useState();
-  const [imgPreviewExtra5, setImgPreviewExtra5] = useState();
-  const [imgPreviewExtra6, setImgPreviewExtra6] = useState();
+
   useEffect(() => {
     if (contentPage) {
-      setDataVnLVUD(contentPage.dataPageVn.linhVucUngDung);
-      setDataEnLVUD(contentPage.dataPageEn.linhVucUngDung);
+      //   setDataVnLVUD(contentPage.dataPageVn.linhVucUngDung);
+      //   setDataEnLVUD(contentPage.dataPageEn.linhVucUngDung);
 
-      let dataEn = contentPage.dataPageEn.linhVucUngDung;
-      let dataVn = contentPage.dataPageVn.linhVucUngDung;
+      let dataEn = contentPage.dataAboutEn.coreValues;
+      let dataVn = contentPage.dataAboutVn.coreValues;
 
+      setDataEnCoreValue(dataEn);
+      setDataVnCoreValue(dataVn);
       form.setFieldValue('titleMainVn', dataVn.title);
       form.setFieldValue('titleMainEn', dataEn.title);
+
       form.setFieldValue('titleVn1', dataVn.listData[0].title);
       form.setFieldValue('titleVn2', dataVn.listData[1].title);
       form.setFieldValue('titleVn3', dataVn.listData[2].title);
       form.setFieldValue('titleVn4', dataVn.listData[3].title);
-      form.setFieldValue('titleVn5', dataVn.listData[4].title);
-      form.setFieldValue('titleVn6', dataVn.listData[5].title);
+      form.setFieldValue('desVn1', dataVn.listData[0].des);
+      form.setFieldValue('desVn2', dataVn.listData[1].des);
+      form.setFieldValue('desVn3', dataVn.listData[2].des);
+      form.setFieldValue('desVn4', dataVn.listData[3].des);
       form.setFieldValue('titleEn1', dataEn.listData[0].title);
       form.setFieldValue('titleEn2', dataEn.listData[1].title);
       form.setFieldValue('titleEn3', dataEn.listData[2].title);
       form.setFieldValue('titleEn4', dataEn.listData[3].title);
-      form.setFieldValue('titleEn5', dataEn.listData[4].title);
-      form.setFieldValue('titleEn6', dataEn.listData[5].title);
+      form.setFieldValue('desEn1', dataEn.listData[0].des);
+      form.setFieldValue('desEn2', dataEn.listData[1].des);
+      form.setFieldValue('desEn3', dataEn.listData[2].des);
+      form.setFieldValue('desEn4', dataEn.listData[3].des);
     }
   }, [contentPage]);
 
@@ -94,9 +107,10 @@ const LinhVucUngDung = () => {
     </Button>
   );
 
-  const getTypeContent = (title, img) => {
+  const getTypeContent = (title, des, img) => {
     return {
       title: title,
+      des: des,
       img: img,
     };
   };
@@ -106,67 +120,61 @@ const LinhVucUngDung = () => {
     let formDataExtra2 = new FormData();
     let formDataExtra3 = new FormData();
     let formDataExtra4 = new FormData();
-    let formDataExtra5 = new FormData();
-    let formDataExtra6 = new FormData();
 
     formDataExtra1.append('file', base64Extra1);
     formDataExtra2.append('file', base64Extra2);
     formDataExtra3.append('file', base64Extra3);
     formDataExtra4.append('file', base64Extra4);
-    formDataExtra5.append('file', base64Extra5);
-    formDataExtra6.append('file', base64Extra6);
 
-    let listDataForm = form.getFieldsValue();
     let {
+      titleMainVn,
+      titleMainEn,
       titleVn1,
       titleVn2,
       titleVn3,
       titleVn4,
-      titleVn5,
-      titleVn6,
       titleEn1,
       titleEn2,
       titleEn3,
       titleEn4,
-      titleEn5,
-      titleEn6,
-      titleMainVn,
-      titleMainEn,
-    } = listDataForm;
+      desVn1,
+      desVn2,
+      desVn3,
+      desVn4,
+      desEn1,
+      desEn2,
+      desEn3,
+      desEn4,
+    } = form.getFieldsValue();
 
-    let dataUpdateLvud = {
+    let dataUpdateCoreValues = {
       titleVn: titleMainVn,
       titleEn: titleMainEn,
       dataListVn: [
-        getTypeContent(titleVn1, dataVnLVUD?.listData[0].img),
-        getTypeContent(titleVn2, dataVnLVUD?.listData[1].img),
-        getTypeContent(titleVn3, dataVnLVUD?.listData[2].img),
-        getTypeContent(titleVn4, dataVnLVUD?.listData[3].img),
-        getTypeContent(titleVn5, dataVnLVUD?.listData[4].img),
-        getTypeContent(titleVn6, dataVnLVUD?.listData[5].img),
+        getTypeContent(titleVn1, desVn1, dataVnCoreValue?.listData[0].img),
+        getTypeContent(titleVn2, desVn2, dataVnCoreValue?.listData[1].img),
+        getTypeContent(titleVn3, desVn3, dataVnCoreValue?.listData[2].img),
+        getTypeContent(titleVn4, desVn4, dataVnCoreValue?.listData[3].img),
       ],
       dataListEn: [
-        getTypeContent(titleEn1, dataVnLVUD?.listData[0].img),
-        getTypeContent(titleEn2, dataVnLVUD?.listData[1].img),
-        getTypeContent(titleEn3, dataVnLVUD?.listData[2].img),
-        getTypeContent(titleEn4, dataVnLVUD?.listData[3].img),
-        getTypeContent(titleEn5, dataVnLVUD?.listData[4].img),
-        getTypeContent(titleEn6, dataVnLVUD?.listData[5].img),
+        getTypeContent(titleEn1, desEn1, dataEnCoreValue?.listData[0].img),
+        getTypeContent(titleEn2, desEn2, dataEnCoreValue?.listData[1].img),
+        getTypeContent(titleEn3, desEn3, dataEnCoreValue?.listData[2].img),
+        getTypeContent(titleEn4, desEn4, dataEnCoreValue?.listData[3].img),
       ],
     };
-
     try {
       if (base64Extra1) {
         const dataImg1 = await imgUploadService.postImg(
           formDataExtra1,
-          dataVnLVUD?.listData[0].img,
+          dataVnCoreValue?.listData[0].img,
         );
-        let newDatalistVn = [...dataUpdateLvud.dataListVn];
-        let newDatalistEn = [...dataUpdateLvud.dataListEn];
+        let newDatalistVn = [...dataUpdateCoreValues.dataListVn];
+        let newDatalistEn = [...dataUpdateCoreValues.dataListEn];
         newDatalistVn[0].img = dataImg1.data.idImg;
         newDatalistEn[0].img = dataImg1.data.idImg;
-        dataUpdateLvud = {
-          ...dataUpdateLvud,
+        dataUpdateCoreValues = {
+          ...dataUpdateCoreValues,
           dataListVn: newDatalistVn,
           dataListEn: newDatalistEn,
         };
@@ -174,15 +182,15 @@ const LinhVucUngDung = () => {
       if (base64Extra2) {
         const dataImg2 = await imgUploadService.postImg(
           formDataExtra2,
-          dataVnLVUD?.listData[1].img,
+          dataVnCoreValue?.listData[1].img,
         );
-        let newDatalistVn = [...dataUpdateLvud.dataListVn];
-        let newDatalistEn = [...dataUpdateLvud.dataListEn];
+        let newDatalistVn = [...dataUpdateCoreValues.dataListVn];
+        let newDatalistEn = [...dataUpdateCoreValues.dataListEn];
 
         newDatalistVn[1].img = dataImg2.data.idImg;
         newDatalistEn[1].img = dataImg2.data.idImg;
-        dataUpdateLvud = {
-          ...dataUpdateLvud,
+        dataUpdateCoreValues = {
+          ...dataUpdateCoreValues,
           dataListVn: newDatalistVn,
           dataListEn: newDatalistEn,
         };
@@ -190,15 +198,15 @@ const LinhVucUngDung = () => {
       if (base64Extra3) {
         const dataImg3 = await imgUploadService.postImg(
           formDataExtra3,
-          dataVnLVUD?.listData[2].img,
+          dataVnCoreValue?.listData[2].img,
         );
-        let newDatalistVn = [...dataUpdateLvud.dataListVn];
-        let newDatalistEn = [...dataUpdateLvud.dataListEn];
+        let newDatalistVn = [...dataUpdateCoreValues.dataListVn];
+        let newDatalistEn = [...dataUpdateCoreValues.dataListEn];
 
         newDatalistVn[2].img = dataImg3.data.idImg;
         newDatalistEn[2].img = dataImg3.data.idImg;
-        dataUpdateLvud = {
-          ...dataUpdateLvud,
+        dataUpdateCoreValues = {
+          ...dataUpdateCoreValues,
           dataListVn: newDatalistVn,
           dataListEn: newDatalistEn,
         };
@@ -206,78 +214,38 @@ const LinhVucUngDung = () => {
       if (base64Extra4) {
         const dataImg4 = await imgUploadService.postImg(
           formDataExtra4,
-          dataVnLVUD?.listData[3].img,
+          dataVnCoreValue?.listData[3].img,
         );
-        let newDatalistVn = [...dataUpdateLvud.dataListVn];
-        let newDatalistEn = [...dataUpdateLvud.dataListEn];
+        let newDatalistVn = [...dataUpdateCoreValues.dataListVn];
+        let newDatalistEn = [...dataUpdateCoreValues.dataListEn];
         newDatalistVn[3].img = dataImg4.data.idImg;
         newDatalistEn[3].img = dataImg4.data.idImg;
-        dataUpdateLvud = {
-          ...dataUpdateLvud,
+        dataUpdateCoreValues = {
+          ...dataUpdateCoreValues,
           dataListVn: newDatalistVn,
           dataListEn: newDatalistEn,
         };
       }
-      if (base64Extra5) {
-        const dataImg5 = await imgUploadService.postImg(
-          formDataExtra5,
-          dataVnLVUD?.listData[4].img,
-        );
-        let newDatalistVn = [...dataUpdateLvud.dataListVn];
-        let newDatalistEn = [...dataUpdateLvud.dataListEn];
-        newDatalistVn[4].img = dataImg5.data.idImg;
-        newDatalistEn[4].img = dataImg5.data.idImg;
-        dataUpdateLvud = {
-          ...dataUpdateLvud,
-          dataListVn: newDatalistVn,
-          dataListEn: newDatalistEn,
-        };
-      }
-      if (base64Extra6) {
-        const dataImg6 = await imgUploadService.postImg(
-          formDataExtra6,
-          dataVnLVUD?.listData[5].img,
-        );
-        let newDatalistVn = [...dataUpdateLvud.dataListVn];
-        let newDatalistEn = [...dataUpdateLvud.dataListEn];
-        newDatalistVn[5].img = dataImg6.data.idImg;
-        newDatalistEn[5].img = dataImg6.data.idImg;
-        dataUpdateLvud = {
-          ...dataUpdateLvud,
-          dataListVn: newDatalistVn,
-          dataListEn: newDatalistEn,
-        };
-      }
-      const data = await linhVucUngDungService.updateContent(
+
+      const data = await veChungToiService.updateCoreValue(
+        dataUpdateCoreValues,
         lg,
-        dataUpdateLvud,
       );
+
       dispatch(getContentPageThunk());
       message.success(data.data);
       setBase64Extra1('');
       setBase64Extra2('');
       setBase64Extra3('');
       setBase64Extra4('');
-      setBase64Extra5('');
-      setBase64Extra6('');
+
       setImgPreviewExtra1('');
       setImgPreviewExtra2('');
       setImgPreviewExtra3('');
       setImgPreviewExtra4('');
-      setImgPreviewExtra5('');
-      setImgPreviewExtra6('');
-    } catch (error) {
-      console.log('error: ', error);
-    }
+    } catch (error) {}
   };
 
-  const getImg = (imgPreview, imgId) => {
-    return imgPreview ? (
-      <Image width={'100%'} height={'300px'} src={imgPreview} />
-    ) : (
-      <ImgFetch w={'100%'} h={'300px'} imgId={imgId} />
-    );
-  };
   const handleChangeImg1 = async ({ fileList: newFileList }) => {
     setBase64Extra1(newFileList[0].originFileObj);
     setImgPreviewExtra1(await getBase64(newFileList[0].originFileObj));
@@ -294,13 +262,13 @@ const LinhVucUngDung = () => {
     setBase64Extra4(newFileList[0].originFileObj);
     setImgPreviewExtra4(await getBase64(newFileList[0].originFileObj));
   };
-  const handleChangeImg5 = async ({ fileList: newFileList }) => {
-    setBase64Extra5(newFileList[0].originFileObj);
-    setImgPreviewExtra5(await getBase64(newFileList[0].originFileObj));
-  };
-  const handleChangeImg6 = async ({ fileList: newFileList }) => {
-    setBase64Extra6(newFileList[0].originFileObj);
-    setImgPreviewExtra6(await getBase64(newFileList[0].originFileObj));
+
+  const getImg = (imgPreview, imgId) => {
+    return imgPreview ? (
+      <Image width={'100%'} height={'200px'} src={imgPreview} />
+    ) : (
+      <ImgFetch w={'100%'} h={'200px'} imgId={imgId} />
+    );
   };
 
   const viewVn = () => {
@@ -319,12 +287,12 @@ const LinhVucUngDung = () => {
           <Input />
         </Form.Item>
         <Row gutter={[40, 40]}>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra1, dataVnLVUD?.listData[0].img)}
+                  {getImg(imgPreviewExtra1, dataVnCoreValue?.listData[0].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -348,14 +316,25 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                name="desVn1"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Không được trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra2, dataVnLVUD?.listData[1].img)}
+                  {getImg(imgPreviewExtra2, dataVnCoreValue?.listData[1].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -379,14 +358,25 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                name="desVn2"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Không được trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra3, dataEnLVUD?.listData[2].img)}
+                  {getImg(imgPreviewExtra3, dataVnCoreValue?.listData[2].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -410,14 +400,25 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                name="desVn3"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Không được trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra4, dataVnLVUD?.listData[3].img)}
+                  {getImg(imgPreviewExtra4, dataVnCoreValue?.listData[3].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -441,59 +442,8 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card
-              size="small"
-              cover={
-                <>
-                  {getImg(imgPreviewExtra5, dataVnLVUD?.listData[4].img)}
-                  <Upload
-                    customRequest={() => {}}
-                    listType="picture"
-                    showUploadList={false}
-                    onChange={handleChangeImg5}
-                    maxCount={1}
-                  >
-                    {uploadButton}
-                  </Upload>
-                </>
-              }
-            >
               <Form.Item
-                name="titleVn5"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Không được trống',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card
-              size="small"
-              cover={
-                <>
-                  {getImg(imgPreviewExtra6, dataVnLVUD?.listData[5].img)}
-                  <Upload
-                    customRequest={() => {}}
-                    listType="picture"
-                    showUploadList={false}
-                    onChange={handleChangeImg6}
-                    maxCount={1}
-                  >
-                    {uploadButton}
-                  </Upload>
-                </>
-              }
-            >
-              <Form.Item
-                name="titleVn6"
+                name="desVn4"
                 rules={[
                   {
                     required: true,
@@ -526,12 +476,12 @@ const LinhVucUngDung = () => {
           <Input />
         </Form.Item>
         <Row gutter={[40, 40]}>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra1, dataVnLVUD?.listData[0].img)}
+                  {getImg(imgPreviewExtra1, dataVnCoreValue?.listData[0].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -555,14 +505,25 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                name="desEn1"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Không được trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra2, dataVnLVUD?.listData[1].img)}
+                  {getImg(imgPreviewExtra2, dataVnCoreValue?.listData[1].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -586,14 +547,25 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                name="desEn2"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Không được trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra3, dataVnLVUD?.listData[2].img)}
+                  {getImg(imgPreviewExtra3, dataVnCoreValue?.listData[2].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -617,14 +589,25 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                name="desEn3"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Không được trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               size="small"
               cover={
                 <>
-                  {getImg(imgPreviewExtra4, dataVnLVUD?.listData[3].img)}
+                  {getImg(imgPreviewExtra4, dataVnCoreValue?.listData[3].img)}
                   <Upload
                     customRequest={() => {}}
                     listType="picture"
@@ -648,59 +631,8 @@ const LinhVucUngDung = () => {
               >
                 <Input />
               </Form.Item>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card
-              size="small"
-              cover={
-                <>
-                  {getImg(imgPreviewExtra5, dataVnLVUD?.listData[4].img)}
-                  <Upload
-                    customRequest={() => {}}
-                    listType="picture"
-                    showUploadList={false}
-                    onChange={handleChangeImg5}
-                    maxCount={1}
-                  >
-                    {uploadButton}
-                  </Upload>
-                </>
-              }
-            >
               <Form.Item
-                name="titleEn5"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Không được trống',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card
-              size="small"
-              cover={
-                <>
-                  {getImg(imgPreviewExtra6, dataVnLVUD?.listData[5].img)}
-                  <Upload
-                    customRequest={() => {}}
-                    listType="picture"
-                    showUploadList={false}
-                    onChange={handleChangeImg6}
-                    maxCount={1}
-                  >
-                    {uploadButton}
-                  </Upload>
-                </>
-              }
-            >
-              <Form.Item
-                name="titleEn6"
+                name="desEn4"
                 rules={[
                   {
                     required: true,
@@ -732,32 +664,34 @@ const LinhVucUngDung = () => {
   ];
 
   return (
-    <Form form={form} initialValues={initValueForm}>
-      <Tabs defaultActiveKey="1" items={items} />
-      <Space
-        style={{
-          marginTop: '20px',
-        }}
-      >
-        <Button
-          onClick={() => {
-            handleUpdateContent(languageUpdate.vn);
+    <div>
+      <Form form={form} initialValues={initValueForm}>
+        <Tabs defaultActiveKey="1" items={items} />
+        <Space
+          style={{
+            marginTop: '20px',
           }}
-          type="primary"
         >
-          Lưu nội dung
-        </Button>
-        <Button
-          onClick={() => {
-            handleUpdateContent(languageUpdate.full);
-          }}
-          type="primary"
-        >
-          Lưu nội dung tiếng anh & tiếng việt
-        </Button>
-      </Space>
-    </Form>
+          <Button
+            onClick={() => {
+              handleUpdateContent(languageUpdate.vn);
+            }}
+            type="primary"
+          >
+            Lưu nội dung
+          </Button>
+          <Button
+            onClick={() => {
+              handleUpdateContent(languageUpdate.full);
+            }}
+            type="primary"
+          >
+            Lưu nội dung tiếng anh & tiếng việt
+          </Button>
+        </Space>
+      </Form>
+    </div>
   );
 };
 
-export default LinhVucUngDung;
+export default GiaTriCotLoi;

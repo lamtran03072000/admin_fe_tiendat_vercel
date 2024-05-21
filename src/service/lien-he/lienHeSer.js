@@ -5,4 +5,8 @@ export const lienHeService = {
     let uri = `/lien-he/lien-he`;
     return https.put(uri, data);
   },
+  updateZalo: (sdt) => {
+    let uri = `/lien-he/zalo?sdt=${sdt}`;
+    return https.put(uri);
+  },
 };

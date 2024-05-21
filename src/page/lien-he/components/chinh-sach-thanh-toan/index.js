@@ -41,7 +41,6 @@ const ChinhSachThanhToan = () => {
 
   useEffect(() => {
     if (contentPage) {
-      console.log('contentPage: ', contentPage);
       const dataVn = contentPage.dataLienHeVn.chinhSachThanhToan;
       setDataVnCs(dataVn);
       const dataEn = contentPage.dataLienHeEn.chinhSachThanhToan;

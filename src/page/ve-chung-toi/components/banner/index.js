@@ -2,8 +2,8 @@ import { Button, Form, Input, Space, Tabs, message } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { languageUpdate } from '../../../../utils/constants';
-import { bannerService } from '../../../../service/lien-he/bannerSer';
 import { getContentPageThunk } from '../../../../store/contentPage/contentPageThunk';
+import { veChungToiService } from '../../../../service/ve-chung-toi/veChungToiSer';
 
 const initValueForm = {
   titleVn: '',
@@ -18,16 +18,10 @@ const Banner = () => {
 
   useEffect(() => {
     if (contentPage) {
-      form.setFieldValue('titleVn', contentPage.dataLienHeVn.banner.title);
-      form.setFieldValue('titleEn', contentPage.dataLienHeEn.banner.title);
-      form.setFieldValue(
-        'titleSubVn',
-        contentPage.dataLienHeVn.banner.subTitle,
-      );
-      form.setFieldValue(
-        'titleSubEn',
-        contentPage.dataLienHeEn.banner.subTitle,
-      );
+      form.setFieldValue('titleVn', contentPage.dataAboutVn.banner.title);
+      form.setFieldValue('titleEn', contentPage.dataAboutEn.banner.title);
+      form.setFieldValue('titleSubVn', contentPage.dataAboutVn.banner.subTitle);
+      form.setFieldValue('titleSubEn', contentPage.dataAboutEn.banner.subTitle);
     }
   }, [contentPage]);
 
@@ -105,7 +99,7 @@ const Banner = () => {
           subTitle: titleSubEn,
         },
       };
-      const dataGet = await bannerService.updateBanner(data, lg);
+      const dataGet = await veChungToiService.updateBanner(data, lg);
       dispatch(getContentPageThunk());
       message.success(dataGet.data);
     } catch (error) {}

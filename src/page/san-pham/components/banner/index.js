@@ -2,8 +2,9 @@ import { Button, Form, Input, Space, Tabs, message } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { languageUpdate } from '../../../../utils/constants';
-import { bannerService } from '../../../../service/lien-he/bannerSer';
 import { getContentPageThunk } from '../../../../store/contentPage/contentPageThunk';
+import { veChungToiService } from '../../../../service/ve-chung-toi/veChungToiSer';
+import { SanPhamService } from '../../../../service/san-pham/SanPhamService';
 
 const initValueForm = {
   titleVn: '',
@@ -18,15 +19,15 @@ const Banner = () => {
 
   useEffect(() => {
     if (contentPage) {
-      form.setFieldValue('titleVn', contentPage.dataLienHeVn.banner.title);
-      form.setFieldValue('titleEn', contentPage.dataLienHeEn.banner.title);
+      form.setFieldValue('titleVn', contentPage.dataPageSanPhamVn.banner.title);
+      form.setFieldValue('titleEn', contentPage.dataPageSanPhamEn.banner.title);
       form.setFieldValue(
         'titleSubVn',
-        contentPage.dataLienHeVn.banner.subTitle,
+        contentPage.dataPageSanPhamVn.banner.subTitle,
       );
       form.setFieldValue(
         'titleSubEn',
-        contentPage.dataLienHeEn.banner.subTitle,
+        contentPage.dataPageSanPhamEn.banner.subTitle,
       );
     }
   }, [contentPage]);
@@ -105,7 +106,7 @@ const Banner = () => {
           subTitle: titleSubEn,
         },
       };
-      const dataGet = await bannerService.updateBanner(data, lg);
+      const dataGet = await SanPhamService.updateBanner(data, lg);
       dispatch(getContentPageThunk());
       message.success(dataGet.data);
     } catch (error) {}

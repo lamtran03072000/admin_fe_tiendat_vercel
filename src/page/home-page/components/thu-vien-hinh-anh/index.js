@@ -23,8 +23,6 @@ const ThuVienHinhAnh = () => {
 
   useEffect(() => {
     if (contentPage) {
-      console.log('contentPage: ', contentPage);
-
       let dataEn = contentPage.dataPageEn.tuLieuHinhAnh;
       let dataVn = contentPage.dataPageVn.tuLieuHinhAnh;
       form.setFieldValue('titleVn', dataVn.title);
@@ -154,6 +152,7 @@ const ThuVienHinhAnh = () => {
         customRequest={() => {}}
         showUploadList={false}
         onChange={handleChange}
+        maxCount={1}
       >
         {uploadButton}
       </Upload>

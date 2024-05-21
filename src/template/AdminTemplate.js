@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   HomeOutlined,
   MailOutlined,
   UsergroupAddOutlined,
   ProductOutlined,
   ContactsOutlined,
+  FormOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import { NavLink, Outlet } from 'react-router-dom';
+import { Breadcrumb, Button, Layout, Menu, theme } from 'antd';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import Loading from '../components/loading';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginStatus } from '../utils/constants';
+import { logoutAction } from '../store/auth/userSlice';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -38,12 +43,38 @@ const items = [
     '5',
     <ContactsOutlined />,
   ),
+  getItem(<NavLink to={'/about'}>Về chúng tôi</NavLink>, '6', <FormOutlined />),
 ];
 export default function AdminTemplate() {
   const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { keyLogin } = useSelector((state) => state.userSlice);
+
+  useEffect(() => {
+    if (keyLogin == loginStatus.fail) {
+      navigate('/login');
+    }
+  }, [keyLogin]);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const header = (
+    <div>
+      <Button
+        onClick={() => {
+          dispatch(logoutAction());
+        }}
+        icon={<LogoutOutlined />}
+        type="primary"
+        danger
+      >
+        Đăng xuất
+      </Button>
+    </div>
+  );
   return (
     <Layout
       style={{
@@ -69,8 +100,12 @@ export default function AdminTemplate() {
           style={{
             padding: 0,
             background: colorBgContainer,
+            display: 'flex',
+            justifyContent: 'end',
           }}
-        ></Header>
+        >
+          {header}
+        </Header>
         <Content
           style={{
             margin: '0 16px',

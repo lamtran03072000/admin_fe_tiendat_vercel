@@ -10,6 +10,8 @@ import { getContentPageThunk } from '../../store/contentPage/contentPageThunk';
 import ImgFetch from '../../components/imgFetch';
 import ThemSanPham from './components/them-san-pham';
 import SuaDanhSachSanPham from './components/sua-danh-sach-san-pham';
+import ContainerSection from '../../HOC/container-section';
+import Banner from './components/banner';
 const panelStyle = {
   margin: '24px 0px',
   background: 'white',
@@ -97,6 +99,10 @@ const SanPham = () => {
         }
         items={getItemsDs(panelStyle)}
       />
+
+      <ContainerSection nameSection={'Banner trang sản phẩm'}>
+        <Banner />
+      </ContainerSection>
     </div>
   );
 };

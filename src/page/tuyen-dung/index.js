@@ -3,6 +3,7 @@ import Banner from './component/banner';
 import TaiSaoLamViec from './component/tai-sao-lam-viec';
 import CacViTriTuyenDung from './component/cac-vi-tri-tuyen-dung';
 import ContainerSection from '../../HOC/container-section';
+import GiaTri from './component/gia-tri';
 
 const TuyenDung = () => {
   return (
@@ -12,6 +13,10 @@ const TuyenDung = () => {
       </ContainerSection>
       <ContainerSection nameSection={'Tại sao làm việc'}>
         <TaiSaoLamViec />
+      </ContainerSection>
+
+      <ContainerSection nameSection={'Giá trị tại đại tiến đạt'}>
+        <GiaTri />
       </ContainerSection>
 
       <ContainerSection nameSection={'Các vị trí tuyển dụng'}>

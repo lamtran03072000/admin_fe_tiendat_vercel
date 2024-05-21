@@ -3,3 +3,8 @@ export const languageUpdate = {
   en: 'en',
   full: 'full',
 };
+
+export const loginStatus = {
+  success: 'tienDatSuccess',
+  fail: 'tienDatFail',
+};

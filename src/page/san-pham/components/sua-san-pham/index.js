@@ -176,7 +176,6 @@ const SuaSanPham = ({ idSp }) => {
 
   const viewImg = () => {
     if (_.isEqual({}, dataSp)) return;
-    console.log('dataSp: ', dataSp);
     return (
       <>
         <Form.Item
