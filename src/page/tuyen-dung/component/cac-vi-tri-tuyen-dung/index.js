@@ -14,16 +14,21 @@ import {
   Tabs,
   Typography,
   message,
+  Image,
+  Upload,
 } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {
   FormOutlined,
   DeleteOutlined,
   PlusCircleOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import { useFormik } from 'formik';
 import { CacViTriService } from '../../../../service/tuyenDung/cacViTri';
 import ContainerSection from '../../../../HOC/container-section';
+import { imgUploadService } from '../../../../service/imgUpload';
+import ImgFetch from '../../../../components/imgFetch';
 
 const { Title } = Typography;
 
@@ -38,6 +43,14 @@ const initValueFormUpdate = {
   soLuongEn: '',
   idUpdate: '',
 };
+
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 const CacViTriTuyenDung = () => {
   const [form] = Form.useForm();
@@ -79,6 +92,7 @@ const CacViTriTuyenDung = () => {
 
   const handleCancelFormUpdate = () => {
     setIsOpenFormUpdate(false);
+    setImgPreviewUpdate('');
   };
 
   const handleCancelFormAddViTri = () => {
@@ -129,13 +143,23 @@ const CacViTriTuyenDung = () => {
   };
 
   const handdleAddViTri = async () => {
+    let formData = new FormData();
+
+    formData.append('file', base64add);
+
     const valueForm = {
       chiTiet: refDetailTd.current.getData(),
       soLuong: formAdd.getFieldsValue().soLuong,
       tenViTri: formAdd.getFieldsValue().tenViTri,
+      hinhAnh: '',
     };
     try {
-      const data = await CacViTriService.postViTri(valueForm);
+      const dataImgUpdate = await imgUploadService.postImg(formData, 0);
+
+      const data = await CacViTriService.postViTri({
+        ...valueForm,
+        hinhAnh: dataImgUpdate.data.idImg,
+      });
       dispatch(getContentPageThunk());
       message.success(data.data);
       handleCancelFormAddViTri();
@@ -235,31 +259,38 @@ const CacViTriTuyenDung = () => {
       form.setFieldValue('tenViTriEn', viTriClickEn.tenViTri);
       form.setFieldValue('soLuongEn', viTriClickEn.soLuong);
       form.setFieldValue('idUpdate', idClick);
-
+      setIdImgClickUpdate(viTriClickVn.hinhAnh);
       refDetailVn.current.setData(viTriClickVn.chiTiet);
       refDetailEn.current.setData(viTriClickEn.chiTiet);
     }, 500);
   };
 
   const handleUpdateContent = async (lg) => {
+    let formData = new FormData();
+    formData.append('file', base64update);
     let { idUpdate, tenViTriVn, tenViTriEn, soLuongVn, soLuongEn } =
       form.getFieldsValue();
 
-    const content = {
+    let content = {
       viTriVn: {
         id: idUpdate,
         tenViTri: tenViTriVn,
         soLuong: soLuongVn,
         chiTiet: refDetailVn.current.getData(),
+        hinhAnh: '',
       },
       viTriEn: {
         id: idUpdate,
         tenViTri: tenViTriEn,
         soLuong: soLuongEn,
         chiTiet: refDetailEn.current.getData(),
+        hinhAnh: '',
       },
     };
     try {
+      const dataImgUpdate = await imgUploadService.postImg(formData, 0);
+      content.viTriEn.hinhAnh = dataImgUpdate.data.idImg;
+      content.viTriVn.hinhAnh = dataImgUpdate.data.idImg;
       const data = await CacViTriService.updateContent(lg, idUpdate, content);
       dispatch(getContentPageThunk());
       message.success(data.data);
@@ -345,6 +376,50 @@ const CacViTriTuyenDung = () => {
     },
   ];
 
+  const uploadButton = (
+    <Button type="primary" icon={<PlusOutlined />}>
+      Upload
+    </Button>
+  );
+
+  const [base64update, setBase64update] = useState();
+  const [imgPreviewUpdate, setImgPreviewUpdate] = useState();
+  const [idImgClickUpdate, setIdImgClickUpdate] = useState();
+  const handleChangeImgUpdate = async ({ fileList: newFileList }) => {
+    setBase64update(newFileList[0].originFileObj);
+    setImgPreviewUpdate(await getBase64(newFileList[0].originFileObj));
+  };
+
+  const formImgUpdate = (
+    <Form.Item
+      label="Hình"
+      rules={[
+        {
+          required: true,
+          message: 'Không được để trống',
+        },
+      ]}
+    >
+      {imgPreviewUpdate ? (
+        <>
+          <Image width={'100%'} height={'300px'} src={imgPreviewUpdate} />
+        </>
+      ) : (
+        <ImgFetch w={'100%'} h={'300px'} imgId={idImgClickUpdate} />
+      )}
+
+      <Upload
+        customRequest={() => {}}
+        listType="picture"
+        showUploadList={false}
+        onChange={handleChangeImgUpdate}
+        maxCount={1}
+      >
+        {uploadButton}
+      </Upload>
+    </Form.Item>
+  );
+
   const formUpdateVn = () => {
     return (
       <Space
@@ -392,6 +467,7 @@ const CacViTriTuyenDung = () => {
             keySection={'detailVn'}
           />
         </Form.Item>
+        {formImgUpdate}
         <Space>
           <Button
             onClick={() => {
@@ -461,6 +537,7 @@ const CacViTriTuyenDung = () => {
             keySection={'detailEn'}
           />
         </Form.Item>
+        {formImgUpdate}
         <Space>
           <Button
             onClick={() => {
@@ -473,6 +550,13 @@ const CacViTriTuyenDung = () => {
         </Space>
       </Space>
     );
+  };
+
+  const [base64add, setBase64add] = useState();
+  const [imgPreviewAdd, setImgPreviewAdd] = useState();
+  const handleChangeImgAdd = async ({ fileList: newFileList }) => {
+    setBase64add(newFileList[0].originFileObj);
+    setImgPreviewAdd(await getBase64(newFileList[0].originFileObj));
   };
 
   const formAddVitri = () => {
@@ -517,6 +601,26 @@ const CacViTriTuyenDung = () => {
           ]}
         >
           <TextEditer refTextEditor={refDetailTd} keySection={'detail'} />
+        </Form.Item>
+        <Form.Item
+          label="Hình"
+          rules={[
+            {
+              required: true,
+              message: 'Không được để trống',
+            },
+          ]}
+        >
+          <Image width={'100%'} height={'300px'} src={imgPreviewAdd} />
+          <Upload
+            customRequest={() => {}}
+            listType="picture"
+            showUploadList={false}
+            onChange={handleChangeImgAdd}
+            maxCount={1}
+          >
+            {uploadButton}
+          </Upload>
         </Form.Item>
         <Space>
           <Button onClick={handdleAddViTri} type="primary">
