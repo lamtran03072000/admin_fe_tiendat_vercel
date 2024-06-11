@@ -17,6 +17,7 @@ import { SanPhamService } from '../../../../service/san-pham/SanPhamService';
 import { useDispatch } from 'react-redux';
 import { getContentPageThunk } from '../../../../store/contentPage/contentPageThunk';
 import TextEditer from '../../../../components/text-editor';
+import ListDesImg from './ListDesImg';
 
 const getBase64Main = (file) =>
   new Promise((resolve, reject) => {
@@ -36,11 +37,9 @@ const ThemSanPham = ({ idDssp }) => {
   const [form] = Form.useForm();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [base64Main, setBase64Main] = useState();
   const [base64Extra1, setBase64Extra1] = useState();
   const [base64Extra2, setBase64Extra2] = useState();
   const [base64Extra3, setBase64Extra3] = useState();
-  const [imgPreviewMain, setImgPreviewMain] = useState();
   const [imgPreviewExtra1, setImgPreviewExtra1] = useState();
   const [imgPreviewExtra2, setImgPreviewExtra2] = useState();
   const [imgPreviewExtra3, setImgPreviewExtra3] = useState();
@@ -62,7 +61,6 @@ const ThemSanPham = ({ idDssp }) => {
   );
   const handleAddProduct = async () => {
     if (
-      !base64Main ||
       !base64Extra1 ||
       !base64Extra2 ||
       !base64Extra3 ||
@@ -74,12 +72,10 @@ const ThemSanPham = ({ idDssp }) => {
       return;
     }
 
-    let formDataMain = new FormData();
     let formDataExtra1 = new FormData();
     let formDataExtra2 = new FormData();
     let formDataExtra3 = new FormData();
 
-    formDataMain.append('file', base64Main);
     formDataExtra1.append('file', base64Extra1);
     formDataExtra2.append('file', base64Extra2);
     formDataExtra3.append('file', base64Extra3);
@@ -92,14 +88,12 @@ const ThemSanPham = ({ idDssp }) => {
       imgExtra: [],
     };
     try {
-      const dataImgMain = await imgUploadService.postImg(formDataMain, 0);
       const dataImgExtra1 = await imgUploadService.postImg(formDataExtra1, 0);
       const dataImgExtra2 = await imgUploadService.postImg(formDataExtra2, 0);
       const dataImgExtra3 = await imgUploadService.postImg(formDataExtra3, 0);
 
       let newDataPostSp = {
         ...dataPostSp,
-        imgMain: dataImgMain.data.idImg,
         imgExtra: [
           dataImgExtra1.data.idImg,
           dataImgExtra2.data.idImg,
@@ -116,16 +110,12 @@ const ThemSanPham = ({ idDssp }) => {
       setImgPreviewExtra1('');
       setImgPreviewExtra2('');
       setImgPreviewExtra3('');
-      setImgPreviewMain('');
       handleCancel();
     } catch (error) {
       console.log('error: ', error);
     }
   };
-  const handleChangeImgMain = async ({ fileList: newFileList }) => {
-    setBase64Main(newFileList[0].originFileObj);
-    setImgPreviewMain(await getBase64Main(newFileList[0].originFileObj));
-  };
+
   const handleChangeImgExtra1 = async ({ fileList: newFileList }) => {
     setBase64Extra1(newFileList[0].originFileObj);
     setImgPreviewExtra1(await getBase64Main(newFileList[0].originFileObj));
@@ -138,6 +128,7 @@ const ThemSanPham = ({ idDssp }) => {
     setBase64Extra3(newFileList[0].originFileObj);
     setImgPreviewExtra3(await getBase64Main(newFileList[0].originFileObj));
   };
+
   return (
     <div>
       <Button type="primary" onClick={showModal}>
@@ -185,26 +176,7 @@ const ThemSanPham = ({ idDssp }) => {
           >
             <TextEditer refTextEditor={refInfoVn} keySection={'infoVNSP'} />
           </Form.Item>
-          <Form.Item
-            label="Hình chính"
-            rules={[
-              {
-                required: true,
-                message: 'Không được để trống',
-              },
-            ]}
-          >
-            <Image width={'100%'} height={'300px'} src={imgPreviewMain} />
-            <Upload
-              customRequest={() => {}}
-              listType="picture"
-              showUploadList={false}
-              onChange={handleChangeImgMain}
-              maxCount={1}
-            >
-              {uploadButton}
-            </Upload>
-          </Form.Item>
+
           <Form.Item
             label="Hình phụ"
             rules={[
@@ -252,6 +224,18 @@ const ThemSanPham = ({ idDssp }) => {
                 </Upload>
               </Col>
             </Row>
+          </Form.Item>
+
+          <Form.Item
+            label="Mô tả hình thêm cho sản phẩm"
+            rules={[
+              {
+                required: true,
+                message: 'Không được để trống',
+              },
+            ]}
+          >
+            <ListDesImg />
           </Form.Item>
         </Form>
         <Button onClick={handleAddProduct} type="primary">

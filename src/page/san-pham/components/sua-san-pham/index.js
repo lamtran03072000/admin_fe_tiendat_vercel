@@ -44,11 +44,9 @@ const SuaSanPham = ({ idSp }) => {
   const [form] = Form.useForm();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [base64Main, setBase64Main] = useState();
   const [base64Extra1, setBase64Extra1] = useState();
   const [base64Extra2, setBase64Extra2] = useState();
   const [base64Extra3, setBase64Extra3] = useState();
-  const [imgPreviewMain, setImgPreviewMain] = useState();
   const [imgPreviewExtra1, setImgPreviewExtra1] = useState();
   const [imgPreviewExtra2, setImgPreviewExtra2] = useState();
   const [imgPreviewExtra3, setImgPreviewExtra3] = useState();
@@ -95,18 +93,15 @@ const SuaSanPham = ({ idSp }) => {
       return;
     }
 
-    let formDataMain = new FormData();
     let formDataExtra1 = new FormData();
     let formDataExtra2 = new FormData();
     let formDataExtra3 = new FormData();
 
-    formDataMain.append('file', base64Main);
     formDataExtra1.append('file', base64Extra1);
     formDataExtra2.append('file', base64Extra2);
     formDataExtra3.append('file', base64Extra3);
 
     let dataUpdateSp = {
-      imgMain: dataSp.imgMain,
       nameVn: form.getFieldValue('tenSpVn'),
       nameEn: form.getFieldValue('tenSpEn'),
       infoVn: refInfoVn.current.getData(),
@@ -116,10 +111,6 @@ const SuaSanPham = ({ idSp }) => {
       imgExtra: [...dataSp.imgExtra],
     };
     try {
-      if (base64Main) {
-        const dataImgMain = await imgUploadService.postImg(formDataMain, 0);
-        dataUpdateSp = { ...dataUpdateSp, imgMain: dataImgMain.data.idImg };
-      }
       if (base64Extra1) {
         const dataImgExtra1 = await imgUploadService.postImg(formDataExtra1, 0);
         let newImgExtra = [...dataUpdateSp.imgExtra];
@@ -144,11 +135,9 @@ const SuaSanPham = ({ idSp }) => {
       setBase64Extra1('');
       setBase64Extra2('');
       setBase64Extra3('');
-      setBase64Main('');
       setImgPreviewExtra1('');
       setImgPreviewExtra2('');
       setImgPreviewExtra3('');
-      setImgPreviewMain('');
 
       message.success(data.data);
       dispatch(getContentPageThunk());
@@ -157,10 +146,7 @@ const SuaSanPham = ({ idSp }) => {
       console.log('error: ', error);
     }
   };
-  const handleChangeImgMain = async ({ fileList: newFileList }) => {
-    setBase64Main(newFileList[0].originFileObj);
-    setImgPreviewMain(await getBase64Main(newFileList[0].originFileObj));
-  };
+
   const handleChangeImgExtra1 = async ({ fileList: newFileList }) => {
     setBase64Extra1(newFileList[0].originFileObj);
     setImgPreviewExtra1(await getBase64Main(newFileList[0].originFileObj));
@@ -179,34 +165,7 @@ const SuaSanPham = ({ idSp }) => {
     return (
       <>
         <Form.Item
-          label="Hình chính"
-          rules={[
-            {
-              required: true,
-              message: 'Không được để trống',
-            },
-          ]}
-        >
-          {imgPreviewMain ? (
-            <>
-              <Image width={'100%'} height={'300px'} src={imgPreviewMain} />
-            </>
-          ) : (
-            <ImgFetch w={'100%'} h={'300px'} imgId={dataSp.imgMain} />
-          )}
-
-          <Upload
-            customRequest={() => {}}
-            listType="picture"
-            showUploadList={false}
-            onChange={handleChangeImgMain}
-            maxCount={1}
-          >
-            {uploadButton}
-          </Upload>
-        </Form.Item>
-        <Form.Item
-          label="Hình phụ"
+          label="Hình"
           rules={[
             {
               required: true,
@@ -435,7 +394,7 @@ const SuaSanPham = ({ idSp }) => {
       </Button>
       <Modal
         width={'70%'}
-        title="Thêm sản phẩm"
+        title="Sửa sản phẩm"
         open={isModalOpen}
         footer=""
         onCancel={handleCancel}

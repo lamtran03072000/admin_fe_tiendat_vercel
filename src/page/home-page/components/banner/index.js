@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { UploadOutlined } from '@ant-design/icons';
 import TextEditer from '../../../../components/text-editor';
 import {
   Button,
@@ -29,37 +30,71 @@ const Banner = () => {
   const { contentPage } = useSelector((state) => state.contentPageSlice);
   const [dataBannerEn, setDataBannerEn] = useState({});
   const [dataBannerVn, setDataBannerVn] = useState({});
-  const [isFirtUploadImg, setIsFirtUploadImg] = useState(false);
+  const [isFirtUploadVideo, setIsFirtUploadVideo] = useState(false);
   useEffect(() => {
     if (contentPage) {
       setDataBannerEn(contentPage.dataPageEn.banner);
+      console.log(
+        'contentPage.dataPageEn.banner: ',
+        contentPage.dataPageEn.banner,
+      );
+
       setDataBannerVn(contentPage.dataPageVn.banner);
     }
   }, [contentPage]);
 
   useEffect(() => {
-    if (!dataBannerVn.img == '' && !dataBannerEn.img == '' && isFirtUploadImg) {
-      handleUpDateImg();
+    if (
+      !dataBannerVn.video == '' &&
+      !dataBannerEn.video == '' &&
+      isFirtUploadVideo
+    ) {
+      handleUpDateVideo();
     }
-  }, [dataBannerVn.img, dataBannerEn.img]);
+  }, [dataBannerVn.video, dataBannerEn.video]);
 
-  const handleChange = async ({ fileList: newFileList }) => {
-    let formData = new FormData();
+  const props = {
+    name: 'file',
+    accept: 'video/*',
+    showUploadList: false,
+    customRequest: async ({ file, onSuccess, onError }) => {
+      const formData = new FormData();
+      formData.append('file', file);
 
-    formData.append('file', newFileList[0].originFileObj);
-    try {
-      const dataImgUpdate = await imgUploadService.postImg(
-        formData,
-        dataBannerVn.img,
-      );
-      setDataBannerVn({ ...dataBannerVn, img: dataImgUpdate.data.idImg });
-      setDataBannerEn({ ...dataBannerEn, img: dataImgUpdate.data.idImg });
-      setIsFirtUploadImg(true);
-    } catch (error) {}
+      try {
+        const data = await imgUploadService.postVideo(
+          formData,
+          contentPage?.dataPageEn.banner.video,
+        );
+        setDataBannerVn({ ...dataBannerVn, video: data.data.url });
+        setDataBannerEn({ ...dataBannerEn, video: data.data.url });
+        setIsFirtUploadVideo(true);
+        onSuccess(data.data);
+        message.success('Video uploaded successfully');
+      } catch (error) {
+        onError(error);
+        message.error('Failed to upload video');
+      }
+    },
   };
-  const uploadButton = <Button icon={<PlusOutlined />}>Upload</Button>;
+  const viewVideo = (
+    <div>
+      <video
+        src={contentPage?.dataPageEn.banner.video}
+        controls
+        width="640"
+        height="360"
+      >
+        Your browser does not support the video tag.
+      </video>
 
-  const handleUpDateImg = async () => {
+      <Upload {...props}>
+        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+      </Upload>
+    </div>
+  );
+
+  const handleUpDateVideo = async () => {
     let content = {
       dataBannerVn,
       dataBannerEn,
@@ -69,6 +104,7 @@ const Banner = () => {
         content,
       });
       message.success(data.data);
+      dispatch(getContentPageThunk());
     } catch (error) {
       console.log('error: ', error);
     }
@@ -78,8 +114,14 @@ const Banner = () => {
     let contentBannerVn = refBannerTextVn.current.getData();
     let contentBannerEn = refBannerTextEn.current.getData();
 
-    let newDataBannerVn = { ...dataBannerVn, content: contentBannerVn };
-    let newDataBannerEn = { ...dataBannerEn, content: contentBannerEn };
+    let newDataBannerVn = {
+      ...dataBannerVn,
+      content: contentBannerVn,
+    };
+    let newDataBannerEn = {
+      ...dataBannerEn,
+      content: contentBannerEn,
+    };
     let content = {
       dataBannerVn: newDataBannerVn,
       dataBannerEn: newDataBannerEn,
@@ -171,7 +213,7 @@ const Banner = () => {
           <>
             <Title level={4}>Hình trên web</Title>
 
-            <ImgFetch w={'100%'} h={'300px'} imgId={dataBannerVn.img} />
+            {/* <ImgFetch w={'100%'} h={'300px'} imgId={dataBannerVn.img} />
             <br />
             <br />
             <Upload
@@ -182,7 +224,9 @@ const Banner = () => {
               maxCount={1}
             >
               {uploadButton}
-            </Upload>
+            </Upload> */}
+
+            {viewVideo}
           </>
         </Col>
         <Col span={8}>
