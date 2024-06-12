@@ -37,12 +37,15 @@ const ThemSanPham = ({ idDssp }) => {
   const [form] = Form.useForm();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [listBase64Des, setListBase64Des] = useState([]);
+  const [fileList, setFileList] = useState([]);
   const [base64Extra1, setBase64Extra1] = useState();
   const [base64Extra2, setBase64Extra2] = useState();
   const [base64Extra3, setBase64Extra3] = useState();
   const [imgPreviewExtra1, setImgPreviewExtra1] = useState();
   const [imgPreviewExtra2, setImgPreviewExtra2] = useState();
   const [imgPreviewExtra3, setImgPreviewExtra3] = useState();
+
   const dispatch = useDispatch();
 
   const showModal = (event) => {
@@ -52,6 +55,7 @@ const ThemSanPham = ({ idDssp }) => {
 
   const handleCancel = (event) => {
     setIsModalOpen(false);
+    setFileList([]);
   };
 
   const uploadButton = (
@@ -88,10 +92,17 @@ const ThemSanPham = ({ idDssp }) => {
       imgExtra: [],
     };
     try {
+      let imgDesArray = [];
+      for (let base64 of listBase64Des) {
+        let formData = new FormData();
+        formData.append('file', base64);
+        const dataImg = await imgUploadService.postImg(formData, 0);
+        imgDesArray.push(dataImg.data.idImg);
+      }
+
       const dataImgExtra1 = await imgUploadService.postImg(formDataExtra1, 0);
       const dataImgExtra2 = await imgUploadService.postImg(formDataExtra2, 0);
       const dataImgExtra3 = await imgUploadService.postImg(formDataExtra3, 0);
-
       let newDataPostSp = {
         ...dataPostSp,
         imgExtra: [
@@ -99,8 +110,8 @@ const ThemSanPham = ({ idDssp }) => {
           dataImgExtra2.data.idImg,
           dataImgExtra3.data.idImg,
         ],
+        imgDesArray: imgDesArray,
       };
-
       await SanPhamService.postSp(idDssp, newDataPostSp);
       dispatch(getContentPageThunk());
       message.success('Thêm thành công sản phẩm');
@@ -235,7 +246,11 @@ const ThemSanPham = ({ idDssp }) => {
               },
             ]}
           >
-            <ListDesImg />
+            <ListDesImg
+              setListBase64Des={setListBase64Des}
+              fileList={fileList}
+              setFileList={setFileList}
+            />
           </Form.Item>
         </Form>
         <Button onClick={handleAddProduct} type="primary">

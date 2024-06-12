@@ -28,7 +28,9 @@ const DanhSachSanPham = ({ dataDssp }) => {
           style={{
             border: '0.5px solid gray',
           }}
-          cover={<ImgFetch w={'100%'} h={'200px'} imgId={sanPham.imgMain} />}
+          cover={
+            <ImgFetch w={'100%'} h={'200px'} imgId={sanPham.imgExtra[0]} />
+          }
         >
           <Meta title={sanPham.nameVn} />
           <Space

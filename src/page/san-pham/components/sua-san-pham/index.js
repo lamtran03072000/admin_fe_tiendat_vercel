@@ -23,6 +23,7 @@ import { languageUpdate } from '../../../../utils/constants';
 import ImgFetch from '../../../../components/imgFetch';
 
 import _ from 'lodash';
+import ListDesImg from './ListDesImg';
 const getBase64Main = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -56,6 +57,7 @@ const SuaSanPham = ({ idSp }) => {
   const fetchSpApi = async () => {
     try {
       const data = await SanPhamService.getSp(idSp);
+      console.log('data: ', data.data);
       form.setFieldValue('tenSpVn', data.data.nameVn);
       form.setFieldValue('tenSpEn', data.data.nameEn);
       setDataSp(data.data);
@@ -294,6 +296,22 @@ const SuaSanPham = ({ idSp }) => {
           />
         </Form.Item>
         {viewImg()}
+
+        <Form.Item
+          label="Mô tả hình thêm cho sản phẩm"
+          rules={[
+            {
+              required: true,
+              message: 'Không được để trống',
+            },
+          ]}
+        >
+          <ListDesImg
+            listIdImg={dataSp.imgDesArray}
+            idSp={idSp}
+            fetchSpApi={fetchSpApi}
+          />
+        </Form.Item>
         <Space>
           <Button
             onClick={() => {
@@ -361,6 +379,21 @@ const SuaSanPham = ({ idSp }) => {
           />
         </Form.Item>
         {viewImg()}
+        <Form.Item
+          label="Mô tả hình thêm cho sản phẩm"
+          rules={[
+            {
+              required: true,
+              message: 'Không được để trống',
+            },
+          ]}
+        >
+          <ListDesImg
+            listIdImg={dataSp.imgDesArray}
+            idSp={idSp}
+            fetchSpApi={fetchSpApi}
+          />
+        </Form.Item>
         <Button
           onClick={() => {
             handleUpdateProduct(languageUpdate.en);
