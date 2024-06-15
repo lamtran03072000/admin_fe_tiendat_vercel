@@ -34,10 +34,6 @@ const Banner = () => {
   useEffect(() => {
     if (contentPage) {
       setDataBannerEn(contentPage.dataPageEn.banner);
-      console.log(
-        'contentPage.dataPageEn.banner: ',
-        contentPage.dataPageEn.banner,
-      );
 
       setDataBannerVn(contentPage.dataPageVn.banner);
     }

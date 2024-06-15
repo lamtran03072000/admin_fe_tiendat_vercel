@@ -85,12 +85,10 @@ const Des = () => {
         },
       };
       const dataImg = await imgUploadService.postImg(formData);
-      console.log('dataImg: ', dataImg);
 
       data.vn.img = dataImg.data.idImg;
       data.en.img = dataImg.data.idImg;
 
-      console.log(data);
       const dataGet = await veChungToiService.updateDes(data, lg);
       dispatch(getContentPageThunk());
       message.success(dataGet.data);

@@ -14,10 +14,13 @@ import { PlusOutlined } from '@ant-design/icons';
 import { imgUploadService } from '../../../../service/imgUpload';
 import { SanPhamService } from '../../../../service/san-pham/SanPhamService';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getContentPageThunk } from '../../../../store/contentPage/contentPageThunk';
 import TextEditer from '../../../../components/text-editor';
 import ListDesImg from './ListDesImg';
+import FormAddSpMoTa from './FormAddSpMoTa';
+import ListSpMoTa from './ListSpMoTa';
+import { handleClearForm } from '../../../../store/SanPham/sanPhamSlice';
 
 const getBase64Main = (file) =>
   new Promise((resolve, reject) => {
@@ -35,7 +38,7 @@ const ThemSanPham = ({ idDssp }) => {
   const refDesVn = useRef('');
   const refInfoVn = useRef('');
   const [form] = Form.useForm();
-
+  const { dsSpMoTaAdd } = useSelector((state) => state.sanPhamSlice);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [listBase64Des, setListBase64Des] = useState([]);
   const [fileList, setFileList] = useState([]);
@@ -56,6 +59,7 @@ const ThemSanPham = ({ idDssp }) => {
   const handleCancel = (event) => {
     setIsModalOpen(false);
     setFileList([]);
+    dispatch(handleClearForm());
   };
 
   const uploadButton = (
@@ -93,11 +97,15 @@ const ThemSanPham = ({ idDssp }) => {
     };
     try {
       let imgDesArray = [];
-      for (let base64 of listBase64Des) {
+      for (let item of dsSpMoTaAdd) {
         let formData = new FormData();
-        formData.append('file', base64);
+        formData.append('file', item.base64);
         const dataImg = await imgUploadService.postImg(formData, 0);
-        imgDesArray.push(dataImg.data.idImg);
+
+        imgDesArray.push({
+          des: item.des,
+          img: dataImg.data.idImg,
+        });
       }
 
       const dataImgExtra1 = await imgUploadService.postImg(formDataExtra1, 0);
@@ -246,12 +254,20 @@ const ThemSanPham = ({ idDssp }) => {
               },
             ]}
           >
-            <ListDesImg
+            {/* <ListDesImg
               setListBase64Des={setListBase64Des}
               fileList={fileList}
               setFileList={setFileList}
-            />
+            /> */}
           </Form.Item>
+          <Row>
+            <Col span={6}>
+              <FormAddSpMoTa />
+            </Col>
+            <Col span={18}>
+              <ListSpMoTa />
+            </Col>
+          </Row>
         </Form>
         <Button onClick={handleAddProduct} type="primary">
           Thêm

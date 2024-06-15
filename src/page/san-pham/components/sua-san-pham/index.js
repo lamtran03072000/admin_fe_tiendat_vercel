@@ -23,7 +23,9 @@ import { languageUpdate } from '../../../../utils/constants';
 import ImgFetch from '../../../../components/imgFetch';
 
 import _ from 'lodash';
-import ListDesImg from './ListDesImg';
+import ListSpMoTa from './ListSpMoTa';
+import FormUpdateSpDes from './FormUpdateSpDes';
+// import ListDesImg from './ListDesImg';
 const getBase64Main = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -57,7 +59,7 @@ const SuaSanPham = ({ idSp }) => {
   const fetchSpApi = async () => {
     try {
       const data = await SanPhamService.getSp(idSp);
-      console.log('data: ', data.data);
+
       form.setFieldValue('tenSpVn', data.data.nameVn);
       form.setFieldValue('tenSpEn', data.data.nameEn);
       setDataSp(data.data);
@@ -161,6 +163,25 @@ const SuaSanPham = ({ idSp }) => {
     setBase64Extra3(newFileList[0].originFileObj);
     setImgPreviewExtra3(await getBase64Main(newFileList[0].originFileObj));
   };
+
+  const formDsMota = (
+    <Row
+      style={{
+        marginBottom: 30,
+      }}
+    >
+      <Col span={8}>
+        <FormUpdateSpDes idSp={idSp} fetchSpApi={fetchSpApi} />
+      </Col>
+      <Col span={16}>
+        <ListSpMoTa
+          listData={dataSp.imgDesArray}
+          idSp={idSp}
+          fetchSpApi={fetchSpApi}
+        />
+      </Col>
+    </Row>
+  );
 
   const viewImg = () => {
     if (_.isEqual({}, dataSp)) return;
@@ -296,7 +317,6 @@ const SuaSanPham = ({ idSp }) => {
           />
         </Form.Item>
         {viewImg()}
-
         <Form.Item
           label="Mô tả hình thêm cho sản phẩm"
           rules={[
@@ -306,12 +326,14 @@ const SuaSanPham = ({ idSp }) => {
             },
           ]}
         >
-          <ListDesImg
+          {/* <ListDesImg
             listIdImg={dataSp.imgDesArray}
             idSp={idSp}
             fetchSpApi={fetchSpApi}
-          />
+          /> */}
         </Form.Item>
+        {formDsMota}
+
         <Space>
           <Button
             onClick={() => {
@@ -388,12 +410,13 @@ const SuaSanPham = ({ idSp }) => {
             },
           ]}
         >
-          <ListDesImg
+          {/* <ListDesImg
             listIdImg={dataSp.imgDesArray}
             idSp={idSp}
             fetchSpApi={fetchSpApi}
-          />
+          /> */}
         </Form.Item>
+        {formDsMota}
         <Button
           onClick={() => {
             handleUpdateProduct(languageUpdate.en);

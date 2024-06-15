@@ -41,8 +41,12 @@ export const SanPhamService = {
     let uri = `/san-pham/imgDes?idImg=${idImg}&idSp=${idSp}`;
     return https.delete(uri);
   },
-  postImgDesSp: (idImg, idSp) => {
-    let uri = `/san-pham/imgDes?idImg=${idImg}&idSp=${idSp}`;
-    return https.post(uri);
+  postImgDesSp: (data, idSp) => {
+    let uri = `/san-pham/imgDes?idSp=${idSp}`;
+    return https.post(uri, data);
+  },
+  updateImgDesSp: (data, idSp, idImg) => {
+    let uri = `/san-pham/imgDes?idSp=${idSp}&idImg=${idImg}`;
+    return https.put(uri, data);
   },
 };
