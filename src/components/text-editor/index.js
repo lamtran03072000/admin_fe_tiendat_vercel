@@ -12,7 +12,7 @@ const TextEditer = ({ keySection, data, refTextEditor }) => {
         data={data}
         editor={ClassicEditor}
         config={{
-          toolbar: ['bold', 'italic', '|'],
+          toolbar: ['bold', 'italic', 'link', '|'],
         }}
         key={keySection}
         onReady={(editor) => {

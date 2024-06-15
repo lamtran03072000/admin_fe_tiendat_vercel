@@ -426,6 +426,7 @@ const SuaSanPham = ({ idSp }) => {
         Sửa
       </Button>
       <Modal
+        zIndex={2}
         width={'70%'}
         title="Sửa sản phẩm"
         open={isModalOpen}
