@@ -12,6 +12,7 @@ import ThemSanPham from './components/them-san-pham';
 import SuaDanhSachSanPham from './components/sua-danh-sach-san-pham';
 import ContainerSection from '../../HOC/container-section';
 import Banner from './components/banner';
+import QuyTrinh from './components/quy-trinh';
 const panelStyle = {
   margin: '24px 0px',
   background: 'white',
@@ -102,6 +103,9 @@ const SanPham = () => {
 
       <ContainerSection nameSection={'Banner trang sản phẩm'}>
         <Banner />
+      </ContainerSection>
+      <ContainerSection nameSection={'Quy trình sản phẩm'}>
+        <QuyTrinh />
       </ContainerSection>
     </div>
   );

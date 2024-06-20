@@ -37,6 +37,10 @@ export const SanPhamService = {
     let uri = `/san-pham/banner?lg=${lg}`;
     return https.put(uri, data);
   },
+  updateQuyTrinh: (data, lg) => {
+    let uri = `/san-pham/quy-trinh?lg=${lg}`;
+    return https.put(uri, data);
+  },
   deleteImgDesSp: (idImg, idSp) => {
     let uri = `/san-pham/imgDes?idImg=${idImg}&idSp=${idSp}`;
     return https.delete(uri);

@@ -58,6 +58,7 @@ const Des = () => {
       formValue.setFieldValue('titleEn', contentPage.dataAboutEn.des.title);
     }
   }, [contentPage]);
+
   const handleUpdateContent = async (lg) => {
     try {
       // let data = {
@@ -74,20 +75,22 @@ const Des = () => {
         vn: {
           title: titleVn,
           des: refDesVn.current.getData(),
-          img: '',
+          img: dataVn.img,
           linkYoutube: linkYoutube,
         },
         en: {
           title: titleEn,
           des: refDesEn.current.getData(),
-          img: '',
+          img: dataEn.img,
           linkYoutube: linkYoutube,
         },
       };
-      const dataImg = await imgUploadService.postImg(formData);
+      if (base64) {
+        const dataImg = await imgUploadService.postImg(formData);
 
-      data.vn.img = dataImg.data.idImg;
-      data.en.img = dataImg.data.idImg;
+        data.vn.img = dataImg.data.idImg;
+        data.en.img = dataImg.data.idImg;
+      }
 
       const dataGet = await veChungToiService.updateDes(data, lg);
       dispatch(getContentPageThunk());
