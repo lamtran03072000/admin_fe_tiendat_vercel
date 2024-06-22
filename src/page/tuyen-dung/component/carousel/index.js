@@ -6,15 +6,21 @@ import ImgFetch from '../../../../components/imgFetch';
 import { imgUploadService } from '../../../../service/imgUpload';
 import { thuVienHinhAnhService } from '../../../../service/homepage/thuVienHinhAnh';
 import { getContentPageThunk } from '../../../../store/contentPage/contentPageThunk';
+import { giaTriService } from '../../../../service/tuyenDung/giaTriSer';
+import TextEditer from '../../../../components/text-editor';
+import { languageUpdate } from '../../../../utils/constants';
 
 const initValueForm = {
   titleVn: '',
   titleEn: '',
 };
 
-const ThuVienHinhAnh = () => {
+const Carousel = () => {
   const { contentPage } = useSelector((state) => state.contentPageSlice);
-
+  const refDesVn = useRef();
+  const refDesEn = useRef();
+  const [dataVn, setDataVn] = useState();
+  const [dataEn, setDataEn] = useState();
   const dispatch = useDispatch();
 
   const [form] = Form.useForm();
@@ -23,13 +29,32 @@ const ThuVienHinhAnh = () => {
 
   useEffect(() => {
     if (contentPage) {
-      let dataEn = contentPage.dataPageEn.tuLieuHinhAnh;
-      let dataVn = contentPage.dataPageVn.tuLieuHinhAnh;
+      let dataEn = contentPage.dataTuyenDungEn.carousel;
+      let dataVn = contentPage.dataTuyenDungVn.carousel;
+      setDataVn(dataVn);
+      setDataEn(dataEn);
       form.setFieldValue('titleVn', dataVn.title);
       form.setFieldValue('titleEn', dataEn.title);
       setListIdImg(dataVn.listData);
     }
   }, [contentPage]);
+
+  const handleUpdateContent = async (lg) => {
+    try {
+      let { titleVn, titleEn } = form.getFieldsValue();
+      const payload = {
+        titleVn,
+        titleEn,
+        desVn: refDesVn.current.getData(),
+        desEn: refDesEn.current.getData(),
+      };
+
+      console.log('payload: ', payload);
+      await giaTriService.updateContentCarousel(payload, lg);
+      dispatch(getContentPageThunk());
+      message('thành công');
+    } catch (error) {}
+  };
 
   const handleChange = async ({ fileList: newFileList }) => {
     let formImg = new FormData();
@@ -37,7 +62,7 @@ const ThuVienHinhAnh = () => {
 
     try {
       const dataImg = await imgUploadService.postImg(formImg, 0);
-      await thuVienHinhAnhService.createImg(dataImg.data.idImg);
+      await giaTriService.createImgCarousel(dataImg.data.idImg);
       dispatch(getContentPageThunk());
       message.success('thành công upload hình');
     } catch (error) {
@@ -47,7 +72,7 @@ const ThuVienHinhAnh = () => {
 
   const handleDelete = async (idImg) => {
     try {
-      await thuVienHinhAnhService.deleteImg(idImg);
+      await giaTriService.deleteImgCarousel(idImg);
       dispatch(getContentPageThunk());
       message.success('xoá thành công');
     } catch (error) {
@@ -104,36 +129,70 @@ const ThuVienHinhAnh = () => {
       key: '1',
       label: 'Nội dung tiếng việt',
       children: (
-        <Form.Item
-          label="Title"
-          name="titleVn"
-          rules={[
-            {
-              required: true,
-              message: 'Không được trống',
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+        <>
+          <Form.Item
+            label="Title"
+            name="titleVn"
+            rules={[
+              {
+                required: true,
+                message: 'Không được trống',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="des"
+            rules={[
+              {
+                required: true,
+                message: 'Không được trống',
+              },
+            ]}
+          >
+            <TextEditer
+              refTextEditor={refDesVn}
+              data={dataVn?.des}
+              keySection={'desVnTdCa'}
+            />
+          </Form.Item>
+        </>
       ),
     },
     {
       key: '2',
       label: 'Nội dung tiếng anh',
       children: (
-        <Form.Item
-          label="Title"
-          name="titleEn"
-          rules={[
-            {
-              required: true,
-              message: 'Không được trống',
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+        <>
+          <Form.Item
+            label="Title"
+            name="titleEn"
+            rules={[
+              {
+                required: true,
+                message: 'Không được trống',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="des"
+            rules={[
+              {
+                required: true,
+                message: 'Không được trống',
+              },
+            ]}
+          >
+            <TextEditer
+              refTextEditor={refDesEn}
+              data={dataEn?.des}
+              keySection={'desEnTdCa'}
+            />
+          </Form.Item>
+        </>
       ),
       forceRender: true,
     },
@@ -143,7 +202,29 @@ const ThuVienHinhAnh = () => {
     <>
       <Form form={form} initialValues={initValueForm}>
         <Tabs defaultActiveKey="1" items={items} />
+        <Space>
+          <Button
+            onClick={() => {
+              handleUpdateContent(languageUpdate.vn);
+            }}
+            type="primary"
+          >
+            Lưu
+          </Button>
+          <Button
+            onClick={() => {
+              handleUpdateContent(languageUpdate.full);
+            }}
+            type="primary"
+          >
+            Lưu tiếng anh và việt
+          </Button>
+        </Space>
       </Form>
+      <br />
+      <br />
+      <br />
+      <br />
       <Space size={'large'} wrap>
         {renderImg()}
       </Space>
@@ -160,4 +241,4 @@ const ThuVienHinhAnh = () => {
   );
 };
 
-export default ThuVienHinhAnh;
+export default Carousel;
